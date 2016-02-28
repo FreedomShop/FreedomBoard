@@ -24,12 +24,8 @@ void FreedomBoard::begin() {
   
   for(int i=0; i<NUM_PINS; i++) {
 
-     uint8_t pin = IO_PINS[i];
-
-     pinMode(i, INPUT);
-     ioStatus[i].pin = pin; 
-     ioStatus[i].buttonState     = digitalRead(pin);
-     ioStatus[i].lastButtonState = ioStatus[i].buttonState;
+     uint8_t pin                 = IO_PINS[i];
+     ioStatus[i].pin             = pin;
 
   }
   
@@ -41,6 +37,8 @@ void FreedomBoard::begin() {
   
 };
 
+// ----------------------------------------------------------------------------
+
 void FreedomBoard::checkDigitalInput(uint8_t idx)
 {
   PinsStatus    &button = ioStatus[idx];
@@ -49,11 +47,11 @@ void FreedomBoard::checkDigitalInput(uint8_t idx)
   
 
   button.changed = false;
-  if((button.type != DIGITAL) || ((button.pinMode != INPUT) && button.pinMode != INPUT_PULLUP)) return;  
+  if((button.type != DIGITAL) || (button.pinMode == OUTPUT)) return;  
 
   // If the switch changed, due to noise or pressing:
 
-  uint8_t reading   = digitalRead(pin);
+  uint8_t reading = ::digitalRead(pin);
 
   // check to see if you just pressed the button
   // (i.e. the input went from LOW to HIGH),  and you've waited
@@ -62,7 +60,6 @@ void FreedomBoard::checkDigitalInput(uint8_t idx)
   if (reading != button.lastButtonState) {
     // reset the debouncing timer
     button.lastDebounceTime = millis();
-    //Serial.println("reading != lastButtonState");
   }
   
   long m = millis();
@@ -84,11 +81,9 @@ void FreedomBoard::checkDigitalInput(uint8_t idx)
 
 void FreedomBoard::update() { 
   
-  for(int i=0; i<NUM_DIGITAL; i++) {
+  for(int i=0; i<NUM_PINS; i++) {
      
-     if(ioStatus[i].pinMode == INPUT) {
-        checkDigitalInput(i);
-     }
+      checkDigitalInput(i);
   }
 
   for(int i=0; i<NUM_RELAYS; i++) {
@@ -97,7 +92,7 @@ void FreedomBoard::update() {
      if(relay.millisOfTimer) {
        if(millis() - relay.startOfTimer > relay.millisOfTimer) {
          relay.millisOfTimer = 0;
-         setRelay(i+1, relay.previousRelayState);
+         setRelay(i, relay.previousRelayState);
        }  
      } 
   }
@@ -134,29 +129,32 @@ uint8_t FreedomBoard::setRelay(uint8_t num, uint8_t op) {
   else             new_op = op;
   
   relayOutputs[num].relayState = new_op;
-  digitalWrite(relayOutputs[num].pin, new_op);
+  ::digitalWrite(relayOutputs[num].pin, new_op);
   
   return true;
+
 }
 
 // ----------------------------------------------------------------------------
 
 uint8_t FreedomBoard::timerRelay(uint8_t num, uint8_t op, uint32_t timer, uint8_t then) {
 
-  uint8_t previous_op;
   if(num>=NUM_RELAYS) return false;
 
-  RelayStatus& relay = relayOutputs[num];
-  
-  if(then == PREVIOUS) previous_op = relay.relayState;
-  else                 previous_op = then;
-  
+  uint8_t previous_op = relayOutputs[num].relayState;
   setRelay(num, op);
+
+  if(timer) {
+
+     RelayStatus& relay = relayOutputs[num];
   
-  relay.millisOfTimer      = timer;
-  relay.previousRelayState = previous_op;
-  relay.startOfTimer       = millis();
+     if(then != PREVIOUS) previous_op = then;
   
+     relay.millisOfTimer      = timer;
+     relay.previousRelayState = previous_op;
+     relay.startOfTimer       = millis();
+  }  
+
   return true;
 }
 
@@ -164,11 +162,23 @@ uint8_t FreedomBoard::timerRelay(uint8_t num, uint8_t op, uint32_t timer, uint8_
 
 uint8_t FreedomBoard::pinMode(uint8_t num, uint8_t mode, uint8_t type) {
 
-  if(num>=NUM_DIGITAL) return false;  
+  if(num>=NUM_PINS) return false;  
   if(!type) type = num >= NUM_DIGITAL ? ANALOGIC : DIGITAL;
-  ::pinMode(ioStatus[num].pin, mode);
+  uint8_t pin = ioStatus[num].pin;
+
+  if((pin >= A0) && (mode == INPUT_PULLUP)) {
+    ::pinMode(pin, INPUT);
+    ::analogWrite(pin, HIGH); 
+  } else {
+    ::pinMode(pin, mode);
+  }
   ioStatus[num].pinMode = mode;
   ioStatus[num].type    = type;
+  if(mode != OUTPUT && type == DIGITAL) {
+     uint8_t state                 = ::digitalRead(pin);
+     ioStatus[num].buttonState     = state;
+     ioStatus[num].lastButtonState = state;
+  }
   return true;
 }
 

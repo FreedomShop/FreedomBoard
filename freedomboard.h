@@ -6,13 +6,13 @@
 
 #define NUM_RELAYS   4
 #define NUM_DIGITAL  7
-#define NUM_ANALOGIC 4
+#define NUM_ANALOGIC 3
 #define NUM_PINS     11
 
-#define RELAY1_PIN 2
-#define RELAY2_PIN 2
-#define RELAY3_PIN 2
-#define RELAY4_PIN 2
+#define RELAY1_PIN 4
+#define RELAY2_PIN 3
+#define RELAY3_PIN 5
+#define RELAY4_PIN 6
 
 #define IOD_PIN1 7
 #define IOD_PIN2 8
@@ -25,7 +25,6 @@
 #define IOA_PIN1 A0
 #define IOA_PIN2 A1
 #define IOA_PIN3 A2
-#define IOA_PIN4 A3
 
 #define ON 1
 #define OFF 0
@@ -36,7 +35,7 @@
 #define ANALOGIC 2
 
 static uint8_t RELAY_PINS[4]  = {RELAY1_PIN, RELAY2_PIN, RELAY3_PIN, RELAY4_PIN};
-static uint8_t IO_PINS[11]    = {IOD_PIN1, IOD_PIN2, IOD_PIN3, IOD_PIN4, IOD_PIN5, IOD_PIN6, IOD_PIN7, IOA_PIN1, IOA_PIN2, IOA_PIN3, IOA_PIN4};
+static uint8_t IO_PINS[10]    = {IOD_PIN1, IOD_PIN2, IOD_PIN3, IOD_PIN4, IOD_PIN5, IOD_PIN6, IOD_PIN7, IOA_PIN1, IOA_PIN2, IOA_PIN3};
 
 struct PinsStatus {
   
