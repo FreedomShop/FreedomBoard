@@ -10,10 +10,10 @@ o desenvolvimento de aplicações haja visto que ela encapsula as principais fun
 
 ## Características
 
-4 relés 12A
-7 entradas digitais
-3 entradas analógicas ou digitais
-1 entrada para detecção de zero cross (Falta de Energia de Corrente Alternada)
+1. 4 relés 12A
+2. 7 entradas digitais
+3. 3 entradas analógicas ou digitais
+4. 1 entrada para detecção de zero cross (Falta de Energia de Corrente Alternada)
 
 
 
