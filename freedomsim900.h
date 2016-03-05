@@ -1,7 +1,6 @@
 //AT+CMGF=1
 //AT+CNMI=0,0
 
-#include <SoftwareSerial.h>
 #include <StringParser.h>
 
 #define RESPONSE_TIMEOUT 0

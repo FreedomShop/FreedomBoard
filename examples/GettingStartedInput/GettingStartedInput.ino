@@ -17,8 +17,8 @@
 */
 
 #include <freedomboard.h>
-
 #define DEBUG                       // Mostra as mensagens
+
 #ifdef  DEBUG
   #define IF_DEBUG(x) x;
 #else

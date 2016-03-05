@@ -71,12 +71,6 @@ void checkNetwork() {
 
 void setup() { 
 
-  #ifdef DEBUG
-  timer.every(1000,  print_freeRam);
-  #endif
-  
-  timer.every(10000, checkNetwork);
-
   SoftSerial.begin(9600);
   fb.begin();
 
@@ -87,6 +81,13 @@ void setup() {
   Serial.println();
   
   checkNetwork();
+
+  #ifdef DEBUG
+  timer.every(1000,  print_freeRam);
+  #endif
+  
+  timer.every(10000, checkNetwork); // Vai checar o status a cada 10 segundos
+
 
 }
 

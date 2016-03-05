@@ -3,6 +3,11 @@
 #include <Timer.h>
 
 #define   DEBUG
+#ifdef  DEBUG
+  #define IF_DEBUG(x) x;
+#else
+  #define IF_DEBUG(x)
+#endif
 
 #define PHONEBOOK_ADM_POS     250   // Posicao da agenda aonde esta a senha do administrador
 #define PHONEBOOK_USR_BEGIN   1     // Posicao da agenda aonde inicia os numeros que podem enviar comandos
