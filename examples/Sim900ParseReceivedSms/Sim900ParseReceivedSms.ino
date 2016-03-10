@@ -31,9 +31,9 @@
 #define PHONEBOOK_USR_BEGIN   1     // Posicao da agenda aonde inicia os numeros que podem enviar comandos
 #define PHONEBOOK_USR_END     10    // Posicao da agenda aonde termina os numeros que podem enviar comandos
 
-#define CHECK_PHONEBOOK             // So ira enviar de volta o SMS se o numero recebido
+//#define CHECK_PHONEBOOK             // So ira enviar de volta o SMS se o numero recebido
                                     // Estiver na posicao de 1 a 10 da agenda
-//#undef CHECK_PHONEBOOK            // Ira aceitar SMS de qualquer numero
+#undef CHECK_PHONEBOOK            // Ira aceitar SMS de qualquer numero
 
 #include <freedomsim900.h>
 
@@ -50,11 +50,13 @@ uint8_t        countFail  = 0;
 
 
 // Variaveis no PROGMEM para economizar espaco
-
-// Comandos que exigem SENHA
 // Colocar um \0 a mais no final para identificar que e' o ultimo comando
 
 static const char cmds_validate[]  PROGMEM = "CMD1\0CMD2\0CMD3\0\0"; 
+
+#define CMD_CMD1 0
+#define CMD_CMD2 1
+#define CMD_CMD3 2
 
 /* ----------------------------------------------------------------------------- */
 
@@ -66,7 +68,7 @@ void checkNetwork() {
    Serial.print("activityStatus: "); Serial.println(i);
    #endif
    
-   bool hasNetwork = (i == 0);
+   hasNetwork = (i == 0);
       
    // Reseta o SIM900 se fica mais de 5 minutos sem rede
    // Esta rotina e' chamada a cada 10 segundos
@@ -171,6 +173,7 @@ void parse_command(StringParser &command) {
   param = command.nextWord();
 
   i = find_command(cmd, cmds_validate);
+  
   
   #ifdef DEBUG
   Serial.print("find_command: "); Serial.print(cmd); Serial.print(" "); Serial.println(i);

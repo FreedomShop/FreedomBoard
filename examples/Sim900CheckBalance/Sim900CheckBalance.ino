@@ -27,14 +27,15 @@
   #define IF_DEBUG(x)
 #endif
 
-#define MINUTES_FAIL          5      // Minutos sem REDE necessario para resetar o SIM900
-#define PHONEBOOK_USR_BEGIN   1      // Posicao da agenda aonde inicia os numeros que podem enviar comandos
-#define PHONEBOOK_USR_END     10     // Posicao da agenda aonde termina os numeros que podem enviar comandos
-#define NUMBER_BALANCE        "#9999" // Numero ao qual sera enviada para checar o saldo
-#define MESSAGE_BALANCE       "Mensagem para checar o saldo"       // Mensagem a ser enviada
+#define MINUTES_FAIL          5        // Minutos sem REDE necessario para resetar o SIM900
+#define PHONEBOOK_USR_BEGIN   1        // Posicao da agenda aonde inicia os numeros que podem enviar comandos
+#define PHONEBOOK_USR_END     10       // Posicao da agenda aonde termina os numeros que podem enviar comandos
+#define NUMBER_BALANCE        "8000"   // Numero ao qual sera enviada para checar o saldo
+#define NUMBER_RETURN         "8004"   // Numero que vai retonar com o saldo
+#define MESSAGE_BALANCE       "SALDO"  // Mensagem a ser enviada
 #define MESSAGE_SENDED        "Saldo solicitado para a operadora"  // Mensagem de confirmacao do comando
 
-#define WORD_BALANCE          "saldo" // Palavra que deve ser checada na mensagem para saber
+#define WORD_BALANCE          "Recarga" // Palavra que deve ser checada na mensagem para saber
                                       // se foi o retorno da solicitacao de saldo
                                       
 #define CHECK_PHONEBOOK             // So ira enviar de volta o SMS se o numero recebido
@@ -75,7 +76,7 @@ void checkNetwork() {
    Serial.print("activityStatus: "); Serial.println(i);
    #endif
    
-   bool hasNetwork = (i == 0);
+   hasNetwork = (i == 0);
       
    // Reseta o SIM900 se fica mais de 5 minutos sem rede
    // Esta rotina e' chamada a cada 10 segundos
@@ -109,17 +110,19 @@ void checkSMS() {
     buffer.clear();
     buffer.addChars((char*) message.c_str());
     if(number.length() >= 8) parse_command(buffer);
-    else if(number == NUMBER_BALANCE && 
+    else {
+       if(number == NUMBER_RETURN && 
        message.indexOf(WORD_BALANCE) >= 0 &&
        last_number.length() > 0) {
     
-       SIM900.sendSMS(last_number.c_str(), message.c_str());
-       
+         SIM900.sendSMS(last_number.c_str(), message.c_str());
+         // Para garantir que so vai enviar o saldo uma vez
+         last_number = "";
+         
+       }
       
     }
 
-    // Para garantir que so vai enviar o saldo uma vez
-    last_number = "";
 
   }
 

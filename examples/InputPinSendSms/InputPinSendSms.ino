@@ -55,7 +55,7 @@ void checkNetwork() {
    Serial.print("activityStatus: "); Serial.println(i);
    #endif
    
-   bool hasNetwork = (i == 0);
+   hasNetwork = (i == 0);
    
    // Reseta o SIM900 se fica mais de 5 minutos sem rede
    // Esta rotina e' chamada a cada 10 segundos
@@ -101,7 +101,7 @@ void setup() {
   // Define o pino como INPUT_PULLUP utilizando o resistor interno do Arduino
   
   fb.pinMode(INPUT_PIN, INPUT_PULLUP);
-
+  
 }
 
 /* ----------------------------------------------------------------------------- */
@@ -129,11 +129,14 @@ void check_input_pin() {
 
   if(fb.digitalChanged(INPUT_PIN)) {
     
-    IF_DEBUG(Serial.print(INPUT_PIN))
-    
     if (fb.digitalIsLow(INPUT_PIN)) {
      
-       if(hasNetwork) SIM900.sendSMS(NUMBER_SMS, MESSAGE_SMS);
+       if(hasNetwork) {
+           IF_DEBUG(Serial.println("Enviando SMS ..."))
+           SIM900.sendSMS(NUMBER_SMS, MESSAGE_SMS);
+       } else {
+           IF_DEBUG(Serial.println("SEM REDE para enviar SMS ..."))
+       }
     }
   }
   
@@ -144,7 +147,7 @@ void check_input_pin() {
 void loop() {
 
   timer.update();  
-  
+  check_input_pin();
   #ifdef DEBUG
   redirect();
   #endif

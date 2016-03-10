@@ -64,7 +64,7 @@ void checkNetwork() {
    Serial.print("activityStatus: "); Serial.println(i);
    #endif
    
-   bool hasNetwork = (i == 0);
+   hasNetwork = (i == 0);
       
    // Reseta o SIM900 se fica mais de 5 minutos sem rede
    // Esta rotina e' chamada a cada 10 segundos
@@ -150,6 +150,10 @@ bool parse_command(StringParser &command) {
   Serial.print("find_command: "); Serial.print(cmd); Serial.print(" "); Serial.println(i);
   #endif
     
+  // Adiciona um telefone novo na agenda
+  // Parametro: pos - Posicao a Adicionar (1 - 10)
+  //            numero - Numero a adicionar
+  
   if(CMD_ADD == i) {
     
     int pos       = buffer.nextWord(',').toInt();
@@ -160,7 +164,7 @@ bool parse_command(StringParser &command) {
     
     
   // Deleta um telefone que foi adicionado posteriormente
-  // Parametro: pos - Posicao a deletar (0 - 10)
+  // Parametro: pos - Posicao a deletar (1 - 10)
   
   } else if (CMD_DEL == i) {
     

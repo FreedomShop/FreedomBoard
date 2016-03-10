@@ -46,7 +46,7 @@ void checkNetwork() {
    Serial.print("activityStatus: "); Serial.println(i);
    #endif
    
-   bool hasNetwork = (i == 0);
+   hasNetwork = (i == 0);
    
    // Reseta o SIM900 se fica mais de 5 minutos sem rede
    // Esta rotina e' chamada a cada 10 segundos
