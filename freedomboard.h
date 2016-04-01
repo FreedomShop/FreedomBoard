@@ -26,6 +26,8 @@
 #define IOA_PIN2 A1
 #define IOA_PIN3 A2
 
+#define INPUT_ZC 2
+
 #define ON 1
 #define OFF 0
 #define INVERT 2
@@ -77,6 +79,7 @@ public:
      
      uint8_t setRelay(uint8_t num, uint8_t op);
      uint8_t timerRelay(uint8_t num, uint8_t op, uint32_t timer, uint8_t then);
+     uint8_t getRelay(uint8_t num);
 
      uint8_t pinMode(uint8_t num, uint8_t mode, uint8_t type=0);
      uint8_t digitalRead(uint8_t num);

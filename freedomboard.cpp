@@ -7,6 +7,7 @@ uint32_t last_zero_cross = 0;
 void zero_cross() {
   last_zero_cross = millis();
 }
+
 // ----------------------------------------------------------------------------
 
 void FreedomBoard::begin() { 
@@ -30,10 +31,11 @@ void FreedomBoard::begin() {
   }
   
   ac_detection = 0;
-  ac_changed = 0;
-  ac_state   = 255;
+  ac_changed = false;
+  ac_state   = 1;
   
   delay(100);
+  zero_cross();
   
 };
 
@@ -103,11 +105,11 @@ void FreedomBoard::update() {
     
     uint8_t temp_state;
 
-    if(millis() - last_zero_cross > 1000) {
-      if(ac_state == 255) ac_state = 0;
+    if((millis() - last_zero_cross) > 1000) {
+      //if(ac_state == 255) ac_state = 0;
       temp_state = 0;
     } else {
-      if(ac_state == 255) ac_state = 1;
+      //if(ac_state == 255) ac_state = 1;
       temp_state = 1;
     }
     
@@ -133,6 +135,17 @@ uint8_t FreedomBoard::setRelay(uint8_t num, uint8_t op) {
   
   return true;
 
+}
+
+// ----------------------------------------------------------------------------
+
+uint8_t FreedomBoard::getRelay(uint8_t num) {
+
+  uint8_t new_op;
+  if(num>=NUM_RELAYS) return 0;
+  
+  return relayOutputs[num].relayState;
+  
 }
 
 // ----------------------------------------------------------------------------
@@ -261,6 +274,7 @@ void FreedomBoard::acDetection(uint8_t enabled) {
   ac_detection = enabled;
   
   if(enabled) {
+    ::pinMode(INPUT_ZC, INPUT_PULLUP);
     attachInterrupt(0, zero_cross, CHANGE);  
   } else {
     detachInterrupt(0);
