@@ -37,11 +37,11 @@ void setup() {
 
   Serial.begin(57600);
   Serial.println("examples\\GettingStartedInput - Verificando um pino de input");
-  
+
+  // Inicializa a biblioteca da Freedom Board  
   fb.begin();
   
   // Define o pino como INPUT_PULLUP utilizando o resistor interno do Arduino
-  
   fb.pinMode(INPUT_PIN, INPUT_PULLUP);
   
 }
@@ -50,14 +50,19 @@ void setup() {
 
 void loop() {
   
+  // Chama a funcao que atualiza as informacoes internas da FreedomBoard
+  // Deve ser chamada de preferencia no inicio da funcao loop
   fb.update();
 
+  // Verifica se o pino mudou de estado
   if(fb.digitalChanged(INPUT_PIN)) {
     
     IF_DEBUG(Serial.print(INPUT_PIN))
     
+    // Se o novo estado agora eh LOW
     if (fb.digitalIsLow(INPUT_PIN)) {
             
+       // Liga o rele com um timer de 5 segundos depois desliga
        fb.timerRelay(OUTPUT_RELAY, ON, MILLIS_ON, OFF);
        IF_DEBUG(Serial.println(" ficou LOW. Ligando o rele com timer"))
        

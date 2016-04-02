@@ -53,8 +53,12 @@ void loop() {
     IF_DEBUG(Serial.print(op ? "Ligando rele " : "Desligando rele "));
     IF_DEBUG(Serial.println(rele));
     
+    // Aciona um rele, ligando ou desligando
     fb.setRelay(rele, op);
+    
+    // Inverte o valor da variavel op e verifica se o novo valor eh ON
     if(op = (1-op)) {
+      // Vai para o proximo rele
       rele = (rele + 1) % NUM_RELAYS;
     }
   } 
